@@ -343,8 +343,11 @@ class GPOLocatorParser(Parser):
                 return node.parent._force_append(token)
 
             if codearg == 'I17':
-                node = self.codemap['I12'].node
-                return node.parent._force_append(token)
+                if 'I12' in self.codemap:
+                    node = self.codemap['I12'].node
+                    return node.parent._force_append(token)
+                else:
+                    return SKIPPED
 
             if codearg == 'I28':
                 return SKIPPED
