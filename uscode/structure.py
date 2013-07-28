@@ -173,18 +173,24 @@ class Node(BaseNode):
                 # If the next enum is 'ii', the scheme is probably
                 # 'lower_roman'.
                 next_ = self.parser.stream.ahead(1)
+                
+                # If we have no enum, return ourself.
+                if not next_.enum:
+                    return self._force_append(token)
+                
                 if next_.enum.could_be_next_after(enum):
                     return self.parent._force_append(token)
-
+    
                 # Else if it's 'j', it's probably just 'lower'.
                 if next_.enum == j:
                     return self.parent._force_append(token)
+                  
 
             elif enum == I and self_enum == H:
-
                 # If the next enum is 'II', the scheme is probably
                 # 'upper_roman'.
                 next_ = self.parser.stream.ahead(1)
+                
                 if next_.enum.could_be_next_after(enum):
                     return self.parent._force_append(token)
 
@@ -240,7 +246,12 @@ class Node(BaseNode):
 
 
     def json(self):
-        return dict(type='node', sub=[node.json() for node in self])
+        if self.enum:
+            enum_text = self.enum.text
+        else:
+            enum_text = None
+            
+        return dict(type='node', enum=enum_text, sub=[node.json() for node in self])
 
 
 class Parser(object):
