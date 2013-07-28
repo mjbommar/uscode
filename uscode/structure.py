@@ -197,6 +197,10 @@ class Node(BaseNode):
                 # 'upper_roman'.
                 next_ = self.parser.stream.ahead(1)
                 
+                # Check if next_ or next_.enum are none.
+                if not next_ or not next_.enum:
+                    return self._force_append(token)
+                
                 if next_.enum.could_be_next_after(enum):
                     return self.parent._force_append(token)
 
@@ -357,7 +361,8 @@ class GPOLocatorParser(Parser):
         linedata = token.linedata
         if linedata and linedata.codearg == 'I28':
             target_token, note = self.token_to_note(token)
-            target_token.node.footnotes.append(note)
+            if target_token and note:
+                target_token.node.footnotes.append(note)
 
     #  methods.
     def matchobj_to_notedata(self, token, matchobj):
@@ -372,7 +377,10 @@ class GPOLocatorParser(Parser):
         assert text[0] == '\x07'
 
         number = text[3]
-        target_token, offset = self.footnotes[number]
-        text = re.sub(r'^\x07N\\(\d+)\\\s+', '', text)
-        note = dict(offset=offset, text=text, number=number)
-        return target_token, note
+        if number in self.footnotes:
+            target_token, offset = self.footnotes[number]
+            text = re.sub(r'^\x07N\\(\d+)\\\s+', '', text)
+            note = dict(offset=offset, text=text, number=number)
+            return target_token, note
+        else:
+            return None, None
