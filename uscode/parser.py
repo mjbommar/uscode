@@ -245,17 +245,22 @@ def getlines(fp, argmatchers=codes, codematcher=re_code.match, swap=swap,
 
 
 if __name__ == "__main__":
+    import codecs
+    import csv
+    import sys
 
-    import urllib2
-    import zipfile
-    from StringIO import StringIO
+    # Open a GPOLocator file to parse.
+    fp = codecs.open(sys.argv[1], 'r')
+    
+    # Open an output file 
+    csv_file = codecs.open('parser.csv', 'wb')
+    csv_writer = csv.DictWriter(csv_file, ('code', 'argument', 'data'))
 
-    # Download some GPO Locator data to play with, Title 8 of th US Code.
-    print 'Get comfy...this takes a sec...'
-    resp = urllib2.urlopen('http://uscode.house.gov/zip/2010/usc08.zip')
-    data = StringIO(resp.read())
-    fp = zipfile.ZipFile(data).open('usc08.10')
-
+    # Iterate over lines and output
     for line in getlines(fp):
-        print line
-        raw_input('Press enter to see next line: ')
+        line = {'code': line[0],
+                'argument': line[1],
+                'data': line[2].encode('utf8')
+                }
+        csv_writer.writerow(line)
+        
