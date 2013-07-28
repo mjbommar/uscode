@@ -60,10 +60,16 @@ class Stream(object):
         return self._stream[self.i]
 
     def ahead(self, n):
-        return self._stream[self.i + n]
+        try:
+            return self._stream[self.i + n]
+        except IndexError:
+            return self._stream[-1]
 
     def behind(self, n):
-        return self._stream[self.i - n]
+        try:
+            return self._stream[self.i - n]
+        except IndexError:
+            return self._stream[0]
 
 
 class BaseNode(list):
