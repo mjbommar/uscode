@@ -54,7 +54,7 @@ _schemes_lists = {
     'upper_quads':   [c * 4 for c in _alphabet_upper],
     'lower_roman':   _romans,
     'upper_roman':   map(str.upper, _romans),
-    'digits':        map(str, range(1, 200)),
+    'digits':        map(str, range(1, 300)),
     }
 
 del _alphabet
