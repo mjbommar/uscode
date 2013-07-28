@@ -258,6 +258,9 @@ class Section(Base):
                 yield (enum, body, line)
             else:
                 enum_text, body = re.split(r'\s+', text, 1)
+                enum_text = enum_text.replace(u'\x07g742', '')\
+                    .replace(u'\x07T3', '')\
+                    .replace(u'\x07K', '')
                 enums = re.findall(r'\((\S+?)\)', enum_text)
                 enums = map(Enum, enums)
                 for enum in enums[1:]:
