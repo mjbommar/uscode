@@ -4,3 +4,6 @@
 *.pyc
 *.json
 /todo*
+
+.project
+.pydevproject
